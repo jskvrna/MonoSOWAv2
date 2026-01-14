@@ -1,0 +1,30 @@
+#!/bin/bash
+#SBATCH --nodes=1 # 1 node
+#SBATCH --ntasks-per-node=1 # 2 tasks per node
+#SBATCH --cpus-per-task=30 # 6 CPUS per task = 12 CPUS per node
+#SBATCH --mem-per-cpu=10G # 8GB per CPU = 96GB per node
+#SBATCH --time=24:00:00 # time limits: 1 hour
+#SBATCH --error=mod_voxel.err # standard error file
+#SBATCH --output=mod_voxel.out # standard output file
+#SBATCH --partition=amdgpu # partition name
+#SBATCH --mail-user=skvrnjan@fel.cvut.cz # where send info about job
+#SBATCH --mail-type=ALL # what to send, valid type values are NONE, BEGIN, END, FAIL, REQUEUE, ALL
+#SBATCH --gres=gpu:1
+
+cd /path/to/workdir/  # (redacted)
+module load Python/3.9.5-GCCcore-10.3.0
+module load CUDA/11.7.0
+pip install torch==1.13.0+cu117 torchvision==0.14.0+cu117 torchaudio==0.13.0 --extra-index-url https://download.pytorch.org/whl/cu117
+pip install numba
+pip install open3d
+pip install spconv-cu117
+pip install tensorboardX
+pip install scikit-image
+pip install opencv-python
+pip install av2
+pip install kornia
+pip install pyvista
+export PYTHONPATH="${PYTHONPATH}:/path/to/openpcdet_modified"  # (redacted)
+cd openpcdet_modified/
+cd tools/
+srun python test.py --cfg_file /path/to/OpenPCDet2/output/kitti_models/voxel_rcnn_car/voxel_rcnn_car.yaml --ckpt_dir /path/to/OpenPCDet2/output/kitti_models/voxel_rcnn_car/ckpt/ --batch_size 40 --eval_all

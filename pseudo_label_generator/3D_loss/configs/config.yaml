@@ -1,0 +1,30 @@
+general:
+  dataset: kitti # kitti or waymo
+
+optimization:
+  use_rot_gradient_for_moving: True # True: use the rotation gradient for moving, False: use the translation gradient for moving
+  tracker: 3D # 2D or 3D
+
+templates:
+  template_height: 1.52608343
+  template_width: 1.62858987
+  template_length: 3.88395449
+
+  offset_fiat: 0.0
+  offset_passat: 0.0
+  offset_mpv: 0.0
+  offset_suv: 0.0
+
+visualization:
+  show_loaded_templates: False # show the loaded templates
+  show_rendered_picture: False # show the rendered picture
+
+downsampling:
+  voxel_size: 0.15 # voxel size for downsampling
+
+paths:
+  kitti: /path/to/dataset/KITTI/ # path to the KITTI dataset (redacted)
+
+  tcc_det: /path/to/dataset/tcc_det/ # path to the TCC-Det dataset (redacted)
+
+  merged_frames: /path/to/output/merged_frames/ # path to the merged frames (redacted)

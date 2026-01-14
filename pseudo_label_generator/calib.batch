@@ -1,0 +1,18 @@
+#!/bin/bash
+#SBATCH --nodes=1 # 1 node
+#SBATCH --ntasks-per-node=1 # 1 tasks per node
+#SBATCH --cpus-per-task=6 # 6 CPUS per task = 12 CPUS per node
+#SBATCH --mem-per-cpu=10G # 8GB per CPU = 96GB per node
+#SBATCH --time=24:00:00 # time limits: 1 hour
+#SBATCH --error=arr_waymo.err # standard error file
+#SBATCH --output=arr_waymo.out # standard output file
+#SBATCH --partition=amd # partition name
+#SBATCH --mail-user=skvrnjan@fel.cvut.cz # where send info about job
+#SBATCH --mail-type=ALL # what to send, valid type values are NONE, BEGIN, END, FAIL, REQUEUE, ALL
+
+cd /path/to/2D_to_3D_Annotations/
+module purge
+module load CUDA/11.7.0
+module load Python/3.8.6-GCCcore-10.2.0
+srun python calibration_generation.py
+wait

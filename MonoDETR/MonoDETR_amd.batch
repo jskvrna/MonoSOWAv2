@@ -1,0 +1,20 @@
+#!/bin/bash
+#SBATCH --nodes=1 # 1 node
+#SBATCH --ntasks-per-node=1 # 1 task per node
+#SBATCH --cpus-per-task=10 # 20 CPUs per task
+#SBATCH --mem-per-cpu=10G # 10GB per CPU
+#SBATCH --time=24:00:00 # time limit: 24 hours
+#SBATCH --error=monodetr_amd.err # standard error file
+#SBATCH --output=monodetr_amd.out # standard output file
+#SBATCH --partition=amdgpu # partition name
+#SBATCH --mail-user=skvrnjan@fel.cvut.cz # where to send info about job
+#SBATCH --mail-type=ALL # what to send, valid type values are NONE, BEGIN, END, FAIL, REQUEUE, ALL
+#SBATCH --gres=gpu:1 # request 1 GPU
+
+cd /REDACTED_HOME/
+module purge
+module load CUDA/11.7.0
+module load Python/3.10.4-GCCcore-11.3.0
+source venvs/monodetr/bin/activate
+cd project/MonoDETR
+python tools/train_val.py --config configs/monodetr.yaml

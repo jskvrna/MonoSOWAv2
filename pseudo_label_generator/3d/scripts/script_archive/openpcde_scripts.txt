@@ -1,0 +1,52 @@
+ml Python/3.9.5-GCCcore-10.3.0
+ml CUDA/11.7.0
+pip install torch==1.13.0+cu117 torchvision==0.14.0+cu117 torchaudio==0.13.0 --extra-index-url https://download.pytorch.org/whl/cu117
+pip install numba
+pip install open3d
+pip install spconv-cu117
+pip install tensorboardX
+pip install scikit-image
+pip install opencv-python
+pip install av2
+pip install kornia
+
+ln -s /path/to/datasets/KITTI/object_detection/testing /path/to/OpenPCDet/data/kitti/testing
+ln -s /path/to/datasets/KITTI/object_detection/training/calib /path/to/OpenPCDet/data/kitti/training/calib
+ln -s /path/to/datasets/KITTI/object_detection/training/velodyne /path/to/OpenPCDet/data/kitti/training/velodyne
+ln -s /path/to/datasets/KITTI/object_detection/training/image_2 /path/to/OpenPCDet/data/kitti/training/image_2
+ln -s /path/to/datasets/KITTI/object_detection/training/label_2 /path/to/OpenPCDet/data/kitti/training/label_2
+
+
+Pro build openpcdet bez grafiky je nutno dat export TORCH_CUDA_ARCH_LIST="7.0;8.0+PTX"      (Tesla V100 a A100)
+
+python -m pcdet.datasets.kitti.kitti_dataset create_kitti_infos tools/cfgs/dataset_configs/kitti_dataset.yaml
+
+python demo.py --cfg_file cfgs/kitti_models/voxel_rcnn_car.yaml --ckpt voxel_rcnn_car_84.54.pth --data_path /path/to/datasets/KITTI/object_detection/training/velodyne/000008.bin
+
+python test.py --cfg_file cfgs/kitti_models/voxel_rcnn_car.yaml --batch_size 10 --ckpt ../checkpoints/voxel_rcnn_car_84.54.pth
+
+srun sh scripts/dist_test.sh 2 --cfg_file cfgs/kitti_models/voxel_rcnn_car.yaml --batch_size 20 --ckpt ../checkpoints/voxel_rcnn_car_84.54.pth
+
+srun sh scripts/dist_train.sh 2 --cfg_file cfgs/kitti_models/voxel_rcnn_car.yaml --batch_size 20 --ckpt ../checkpoints/test.pth --epochs 1
+
+
+
+Lokalni demo:
+export PYTHONPATH="${PYTHONPATH}:/path/to/2D_to_3D_Annotations/3d/OpenPCDet"
+python3 demo.py --cfg_file cfgs/kitti_models/voxel_rcnn_car.yaml --ckpt /path/to/trained_voxel/voxel_avg_kitti/avg_kitti/ckpt/checkpoint_epoch_50.pth --data_path /path/to/data/kitti/training/velodyne/000001.bin
+
+
+python3 demo.py --cfg_file cfgs/kitti_models/voxel_rcnn_car.yaml --ckpt /path/to/trained_voxel/voxel_avg_kitti/avg_kitti/ckpt/checkpoint_epoch_50.pth --data_path /path/to/data/kitti/training/velodyne/
+python3 demo.py --cfg_file cfgs/kitti_models/voxel_rcnn_car.yaml --ckpt /path/to/trained_voxel/avgkitti_2waybin/ckpt/checkpoint_epoch_50.pth --data_path /path/to/data/kitti/training/velodyne/
+
+python3 demo.py --cfg_file cfgs/kitti_models/voxel_rcnn_car.yaml --ckpt /path/to/trained_voxel/voxel_rcnn_kitti_wo_planes/ckpt/checkpoint_epoch_50.pth --data_path /path/to/data/kitti/training/velodyne/000112.bin
+
+python3 test.py --cfg_file /path/to/new_trained_voxel/test_pcloud_norm/voxel_rcnn_car.yaml --batch_size 5 --ckpt /path/to/new_trained_voxel/test_pcloud_norm/ckpt/checkpoint_epoch_2.pth
+python3 demo.py --cfg_file /path/to/new_trained_voxel/test_pcloud_norm/voxel_rcnn_car.yaml --ckpt /path/to/new_trained_voxel/test_pcloud_norm/ckpt/checkpoint_epoch_1.pth --data_path /path/to/data/kitti/training/velodyne/
+python3 demo.py --cfg_file cfgs/kitti_models/voxel_rcnn_car.yaml --ckpt ../output/kitti_models/voxel_rcnn_car/vanilla_loss/ckpt/checkpoint_epoch_1.pth --data_path /path/to/data/kitti/training/velodyne/
+
+python3 demo.py --cfg_file cfgs/kitti_models/voxel_rcnn_car.yaml --ckpt ../output/kitti_models/voxel_rcnn_car/vanilla_loss/ckpt/checkpoint_epoch_1.pth --data_path /path/to/data/kitti/training/velodyne/
+
+python3 demo.py --cfg_file cfgs/kitti_models/voxel_rcnn_car.yaml --ckpt /path/to/output/mask_loss_10epoch_SL1_RCNN_maskonly/ckpt/checkpoint_epoch_10.pth --data_path /path/to/data/kitti/training/velodyne/
+
+

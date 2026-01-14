@@ -1,0 +1,5 @@
+outputs/
+lib/models/monodetr/ops/build/
+lib/models/monodetr/ops/dist/
+lib/models/monodetr/ops/MultiScaleDeformableAttention.egg-info
+data/

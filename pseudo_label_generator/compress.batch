@@ -1,0 +1,18 @@
+#!/bin/bash
+#SBATCH --nodes=1 # 1 node
+#SBATCH --ntasks-per-node=1 # 1 tasks per node
+#SBATCH --cpus-per-task=2 # 6 CPUS per task = 12 CPUS per node
+#SBATCH --mem-per-cpu=5G # 8GB per CPU = 96GB per node
+#SBATCH --time=4:00:00 # time limits: 1 hour
+#SBATCH --error=arr_waymo.err # standard error file
+#SBATCH --output=arr_waymo.out # standard output file
+#SBATCH --partition=amdfast # partition name
+#SBATCH --mail-user=skvrnjan@fel.cvut.cz # where send info about job
+#SBATCH --mail-type=ALL # what to send, valid type values are NONE, BEGIN, END, FAIL, REQUEUE, ALL
+
+cd /path/to/open_waymo/OpenPCDet/data/waymo
+
+srun zip -r waymo_processed_data_v0_5_0.zip waymo_processed_data_v0_5_0/
+srun zip -r waymo_processed_data_v0_5_0_gt_database_train_sampled_1.zip waymo_processed_data_v0_5_0_gt_database_train_sampled_1
+
+wait
